@@ -1,0 +1,61 @@
+@media (max-width: 640px) {
+  .discipline-list {
+    width: 100%;
+    margin-inline: 0;
+    padding-inline: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    overflow: visible;
+    background: var(--line);
+  }
+
+  .discipline-list button {
+    min-height: 78px;
+    padding: 12px;
+    grid-template-columns: 26px minmax(0, 1fr);
+    gap: 8px;
+    border-left: 0;
+    border-bottom: 0;
+    background: var(--paper);
+  }
+
+  .discipline-list button:hover,
+  .discipline-list button.active {
+    padding: 12px;
+    color: white;
+    background: var(--ink);
+  }
+
+  .discipline-list button strong {
+    font-size: clamp(16px, 4.8vw, 19px);
+    line-height: 1.18;
+  }
+
+  .discipline-help {
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    font-size: 14px;
+    line-height: 1.55;
+  }
+
+  .discipline-help::after {
+    content: "↓";
+    flex: 0 0 auto;
+    color: var(--ink);
+    font-size: 20px;
+    line-height: 1;
+  }
+
+  .discipline-card {
+    margin-top: 10px;
+  }
+
+  .discipline-photo {
+    min-height: 0;
+    aspect-ratio: 16 / 10;
+  }
+}

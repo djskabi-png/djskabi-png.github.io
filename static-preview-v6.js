@@ -1,4 +1,9 @@
 (() => {
+  const mobileDisciplinesStylesheet = document.createElement("link");
+  mobileDisciplinesStylesheet.rel = "stylesheet";
+  mobileDisciplinesStylesheet.href = "/mobile-disciplines-v2.css";
+  document.head.append(mobileDisciplinesStylesheet);
+
   const body = document.body;
   const navigation = document.querySelector(".navigation");
   const menuButton = document.querySelector(".nav-toggle");
