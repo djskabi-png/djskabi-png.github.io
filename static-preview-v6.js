@@ -232,9 +232,11 @@
   try {
     if (window.localStorage.getItem("masgeria-cookie-choice")) {
       cookieBanner.hidden = true;
+      cookieBanner.style.display = "none";
     }
   } catch {
     cookieBanner.hidden = false;
+    cookieBanner.style.display = "";
   }
   cookieBanner.querySelectorAll("button").forEach((button, index) => {
     button.addEventListener("click", () => {
@@ -247,6 +249,7 @@
         // The banner can still close if storage is blocked.
       }
       cookieBanner.hidden = true;
+      cookieBanner.style.display = "none";
     });
   });
 })();
