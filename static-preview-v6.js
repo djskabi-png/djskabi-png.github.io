@@ -21,25 +21,42 @@
     });
   }
 
+  document.querySelectorAll('a[href="#top"]').forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      window.scrollTo({
+        top: 0,
+        behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+          ? "auto"
+          : "smooth",
+      });
+    });
+  });
+
   const heroLabels = [
     "קירוי וקונסטרוקציה",
     "שערים וגידור",
     "מדרגות ומעקות",
   ];
   const heroSlides = [...document.querySelectorAll(".hero-slide")];
-  const heroButtons = [...document.querySelectorAll(".hero-pagination button")];
+  const heroPrevious = document.querySelector('[data-hero="prev"]');
+  const heroNext = document.querySelector('[data-hero="next"]');
+  const heroCounter = document.querySelector(".hero-counter");
   const heroCaption = document.querySelector(".hero-media-caption span");
-  heroButtons.forEach((button, index) => {
-    button.addEventListener("click", () => {
-      heroSlides.forEach((slide, slideIndex) => {
-        slide.classList.toggle("active", slideIndex === index);
-      });
-      heroButtons.forEach((item, buttonIndex) => {
-        item.setAttribute("aria-current", String(buttonIndex === index));
-      });
-      if (heroCaption) heroCaption.textContent = heroLabels[index];
+  let heroIndex = 0;
+  function showHeroSlide(nextIndex) {
+    if (!heroSlides.length) return;
+    heroIndex = (nextIndex + heroSlides.length) % heroSlides.length;
+    heroSlides.forEach((slide, slideIndex) => {
+      slide.classList.toggle("active", slideIndex === heroIndex);
     });
-  });
+    if (heroCaption) heroCaption.textContent = heroLabels[heroIndex];
+    if (heroCounter) {
+      heroCounter.textContent = `${heroIndex + 1} / ${heroSlides.length}`;
+    }
+  }
+  heroPrevious?.addEventListener("click", () => showHeroSlide(heroIndex - 1));
+  heroNext?.addEventListener("click", () => showHeroSlide(heroIndex + 1));
 
   const disciplines = [
     {

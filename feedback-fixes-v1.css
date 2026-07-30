@@ -1,0 +1,94 @@
+.hero-pagination {
+  align-items: center;
+  direction: ltr;
+}
+
+.hero-pagination button {
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.hero-counter {
+  display: grid;
+  place-items: center;
+  min-width: 54px;
+  height: 44px;
+  padding-inline: 10px;
+  color: #fff;
+  background: rgba(13, 15, 14, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  font-size: 12px;
+}
+
+.floating-tools .floating-whatsapp {
+  color: #fff;
+  background: #128c4a;
+  border-color: #128c4a;
+}
+
+.floating-tools {
+  top: auto !important;
+  bottom: max(22px, env(safe-area-inset-bottom)) !important;
+  transform: none !important;
+}
+
+.accessibility-panel {
+  top: auto !important;
+  bottom: max(22px, env(safe-area-inset-bottom)) !important;
+  transform: none !important;
+}
+
+.floating-whatsapp span {
+  display: grid;
+  place-items: center;
+}
+
+.floating-whatsapp svg {
+  width: 22px;
+  height: 22px;
+  fill: currentColor;
+}
+
+@media (max-width: 560px) {
+  .hero-pagination {
+    top: 18px;
+    right: 18px;
+  }
+
+  .hero-pagination button,
+  .hero-counter {
+    height: 42px;
+  }
+
+  .floating-tools {
+    top: auto !important;
+    bottom: max(10px, env(safe-area-inset-bottom)) !important;
+    left: 10px !important;
+    right: auto !important;
+    transform: none !important;
+    grid-template-columns: 72px 48px 48px;
+  }
+
+  .floating-tools a,
+  .floating-tools button {
+    min-width: 48px;
+    min-height: 48px;
+  }
+
+  .accessibility-panel {
+    top: auto !important;
+    bottom: calc(max(10px, env(safe-area-inset-bottom)) + 62px) !important;
+    left: 10px !important;
+    right: auto !important;
+    transform: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide {
+    transition: none;
+    transform: none;
+  }
+}
