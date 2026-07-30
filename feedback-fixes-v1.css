@@ -4,7 +4,7 @@
   --ink: #111311;
   --gray: #4f544f;
   --line: rgba(17, 19, 17, 0.24);
-  --signal: #b7793e;
+  --signal: #a87c50;
   --black: #090b0a;
 }
 
@@ -21,7 +21,7 @@ body {
 
 ::selection {
   color: #000;
-  background: #b7793e;
+  background: #a87c50;
 }
 
 :where(a, button, input, textarea, select):focus-visible {
