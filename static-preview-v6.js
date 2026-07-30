@@ -191,12 +191,83 @@
   const accessibilityButton = document.querySelector(
     '[aria-controls="accessibility-panel"]',
   );
+  const accessibilityRoot = document.documentElement;
+  const accessibilityStorageKey = "masgeria-a11y-preferences";
+  const accessibilityOptions = [
+    {
+      className: "a11y-large-text",
+      label: "טקסט גדול",
+      description: "הגדלת הטקסט בכל האתר",
+    },
+    {
+      className: "a11y-contrast",
+      label: "ניגודיות גבוהה",
+      description: "חיזוק צבעים, קווים וטקסט",
+    },
+    {
+      className: "a11y-reduce-motion",
+      label: "הפחתת תנועה",
+      description: "צמצום אנימציות ומעברים",
+    },
+  ];
   let accessibilityPanel;
-  function closeAccessibility() {
+
+  function getAccessibilityPreferences() {
+    return accessibilityOptions
+      .filter(({ className }) => accessibilityRoot.classList.contains(className))
+      .map(({ className }) => className);
+  }
+
+  function saveAccessibilityPreferences() {
+    try {
+      window.localStorage.setItem(
+        accessibilityStorageKey,
+        JSON.stringify(getAccessibilityPreferences()),
+      );
+    } catch {
+      // Accessibility controls still work when browser storage is unavailable.
+    }
+  }
+
+  function restoreAccessibilityPreferences() {
+    try {
+      const saved = JSON.parse(
+        window.localStorage.getItem(accessibilityStorageKey) || "[]",
+      );
+      if (!Array.isArray(saved)) return;
+      accessibilityOptions.forEach(({ className }) => {
+        accessibilityRoot.classList.toggle(className, saved.includes(className));
+      });
+    } catch {
+      // Ignore invalid or unavailable browser storage.
+    }
+  }
+
+  function updateAccessibilityControls(message = "") {
+    accessibilityOptions.forEach(({ className }) => {
+      const control = accessibilityPanel?.querySelector(
+        `[data-class="${className}"]`,
+      );
+      if (!control) return;
+      control.setAttribute(
+        "aria-pressed",
+        String(accessibilityRoot.classList.contains(className)),
+      );
+    });
+    const status = accessibilityPanel?.querySelector('[role="status"]');
+    if (status) status.textContent = message;
+  }
+
+  function closeAccessibility({ restoreFocus = true } = {}) {
     accessibilityPanel?.remove();
     accessibilityPanel = undefined;
     accessibilityButton?.setAttribute("aria-expanded", "false");
+    accessibilityButton?.setAttribute("aria-label", "פתיחת כלי נגישות");
+    if (restoreFocus) accessibilityButton?.focus();
   }
+
+  restoreAccessibilityPreferences();
+
   accessibilityButton?.addEventListener("click", () => {
     if (accessibilityPanel) {
       closeAccessibility();
@@ -207,31 +278,60 @@
     accessibilityPanel.id = "accessibility-panel";
     accessibilityPanel.setAttribute("aria-label", "אפשרויות נגישות");
     accessibilityPanel.innerHTML = `
-      <header><strong>התאמת תצוגה</strong><button type="button" aria-label="סגירת אפשרויות נגישות">×</button></header>
-      <button type="button" data-class="a11y-large-text">טקסט גדול</button>
-      <button type="button" data-class="a11y-contrast">ניגודיות גבוהה</button>
-      <button type="button" data-class="a11y-reduce-motion">הפחתת תנועה</button>
-      <button type="button" data-reset="true">איפוס התאמות</button>
+      <header><strong>התאמת תצוגה</strong><button type="button" data-close="true" aria-label="סגירת אפשרויות נגישות">×</button></header>
+      <p class="a11y-panel-intro">אפשר להפעיל כמה התאמות יחד. הבחירה תישמר גם במעבר בין עמודים.</p>
+      <div class="a11y-options" role="group" aria-label="התאמות תצוגה">
+        ${accessibilityOptions
+          .map(
+            ({ className, label, description }) => `
+              <button type="button" class="a11y-option" data-class="${className}" aria-pressed="false">
+                <span><strong>${label}</strong><small>${description}</small></span>
+              </button>
+            `,
+          )
+          .join("")}
+      </div>
+      <button type="button" class="a11y-reset" data-reset="true">איפוס כל ההתאמות</button>
+      <p class="a11y-status" role="status" aria-live="polite"></p>
     `;
-    document.querySelector("main")?.append(accessibilityPanel);
+    document.body.append(accessibilityPanel);
     accessibilityButton.setAttribute("aria-expanded", "true");
+    accessibilityButton.setAttribute("aria-label", "סגירת כלי נגישות");
+    updateAccessibilityControls();
     accessibilityPanel
-      .querySelector('[aria-label="סגירת אפשרויות נגישות"]')
+      .querySelector("[data-close]")
       ?.addEventListener("click", closeAccessibility);
     accessibilityPanel.querySelectorAll("[data-class]").forEach((button) => {
       button.addEventListener("click", () => {
-        body.classList.toggle(button.dataset.class);
+        const option = accessibilityOptions.find(
+          ({ className }) => className === button.dataset.class,
+        );
+        if (!option) return;
+        const active = accessibilityRoot.classList.toggle(option.className);
+        saveAccessibilityPreferences();
+        updateAccessibilityControls(
+          `${option.label} ${active ? "הופעל" : "כובה"}.`,
+        );
       });
     });
     accessibilityPanel
       .querySelector("[data-reset]")
       ?.addEventListener("click", () => {
-        body.classList.remove(
-          "a11y-large-text",
-          "a11y-contrast",
-          "a11y-reduce-motion",
-        );
+        accessibilityOptions.forEach(({ className }) => {
+          accessibilityRoot.classList.remove(className);
+        });
+        saveAccessibilityPreferences();
+        updateAccessibilityControls("כל התאמות הנגישות אופסו.");
       });
+    window.requestAnimationFrame(() => {
+      accessibilityPanel?.querySelector("[data-close]")?.focus();
+    });
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && accessibilityPanel) {
+      closeAccessibility();
+    }
   });
 
   let cookieBanner = document.querySelector(".cookie-banner");
