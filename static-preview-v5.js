@@ -146,6 +146,7 @@
 
   function showCookieBanner(show) {
     if (!cookieBanner) return;
+    cookieBanner.hidden = !show;
     cookieBanner.style.display = show ? "" : "none";
   }
 
