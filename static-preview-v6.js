@@ -355,6 +355,18 @@
     cookieBanner.hidden = false;
     cookieBanner.style.display = "";
   }
+  function openPrivacyPreferences() {
+    cookieBanner.hidden = false;
+    cookieBanner.style.display = "";
+    window.requestAnimationFrame(() => {
+      cookieBanner.querySelector("button")?.focus();
+    });
+  }
+  document.querySelectorAll(".footer-base button").forEach((button) => {
+    if (button.textContent?.includes("העדפות פרטיות")) {
+      button.addEventListener("click", openPrivacyPreferences);
+    }
+  });
   cookieBanner.querySelectorAll("button").forEach((button, index) => {
     button.addEventListener("click", () => {
       try {

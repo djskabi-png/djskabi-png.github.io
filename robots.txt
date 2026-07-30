@@ -1,7 +1,5 @@
-User-Agent: *
+User-agent: *
 Allow: /
 Disallow: /admin
 Disallow: /api/admin
-
 Sitemap: https://www.masgeria.co.il/sitemap.xml
-Host: https://www.masgeria.co.il
